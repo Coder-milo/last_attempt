@@ -1,9 +1,7 @@
-// src/main.js
-import { initRouter, navigateTo } from "./router.js";
 
-initRouter();
+import { navigation, navigationTag } from './router.js';
 
-// Redirección inicial opcional
-if (location.pathname === "/") {
-  navigateTo("/landing");
-}
+document.addEventListener('DOMContentLoaded', () => {
+  navigation(location.pathname);
+  navigationTag();
+});

@@ -1,8 +1,4 @@
-// register.js
-// ---------------------------------------------------
-// Front: validación básica + toggle password + POST a API
-// Cambia API_BASE si tu backend corre en otra URL/puerto
-const API_BASE = "/api"; // ej: "http://localhost:3000/api"
+export function init() {
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("registerForm");
@@ -145,3 +141,5 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+}
