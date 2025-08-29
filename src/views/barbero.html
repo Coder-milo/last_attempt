@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Barber Panel - Barbexa</title>
+  
+  <link rel="icon" type="image/png" href="../assets/img/logo2.png">
+  <link rel="stylesheet" href="../src/barbero.css">
+  <!-- Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <nav>
+      <h1><img id="logo" src="../assets/img/logo2.png" alt="">  BARBER</h1>
+      <ul>
+        <li><a href="index.html"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li><a href="barbero.html"><i class="fa-solid fa-user-tie"></i> Panel</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="container">
+
+    <!-- Schedule -->
+    <div class="card">
+      <h2><i class="fa-solid fa-calendar-days"></i> My Schedule</h2>
+      <ul id="agenda"></ul>
+      <button onclick="cargarAgenda()">View Schedule</button>
+    </div>
+
+    <!-- Pending Appointments -->
+    <div class="card">
+      <h2><i class="fa-solid fa-check-circle"></i> Pending Appointments</h2>
+      <ul id="citasPendientes"></ul>
+    </div>
+
+    <!-- Availability -->
+    <div class="card">
+      <h2><i class="fa-solid fa-clock"></i> Availability</h2>
+      <div class="form-inline">
+        <input type="text" id="horario" placeholder="e.g., Monday 9am - 6pm">
+        <button onclick="agregarDisponibilidad()">Add</button>
+      </div>
+      <ul id="disponibilidad"></ul>
+    </div>
+
+    <!-- Clients -->
+    <div class="card">
+      <h2><i class="fa-solid fa-users"></i> Clients</h2>
+      <button onclick="verClientes()">View Clients</button>
+      <ul id="clientes"></ul>
+    </div>
+
+  </div>
+
+  <script src="../js/barbero.js"></script>
+</body>
+</html>

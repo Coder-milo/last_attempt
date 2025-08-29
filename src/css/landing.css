@@ -1,0 +1,296 @@
+/* ====== GLOBAL ====== */
+:root{
+  /* escalas fluidas */
+  --fs-h1: clamp(2rem, 3vw + 1.5rem, 4rem);
+  --fs-h2: clamp(1.4rem, 1.2vw + 1rem, 2.2rem);
+  --fs-h3: clamp(1.05rem, 0.6vw + 0.8rem, 1.5rem);
+  --container-pad: clamp(16px, 3vw, 40px);
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+  background: #0a0603;
+  color: #fffffff1;
+  line-height: 1.6;
+}
+
+h1, h2, h3 {
+  font-family: 'Playfair Display', serif;
+  letter-spacing: 1px;
+}
+
+h1 { font-size: var(--fs-h1); }
+h2 { font-size: var(--fs-h2); margin-bottom: 20px; color: #d4af37; }
+h3 { font-size: var(--fs-h3); margin: 15px 0; }
+
+/* ====== NAVBAR ====== */
+/* NAVBAR base */
+.navbar{
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(0,0,0,.65);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(212,175,55,.22);
+  padding: 10px 16px;
+}
+.brand{
+  max-width: 1280px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr auto; align-items: center;
+}
+.logo{ width: clamp(130px, 14vw, 220px); height: auto; }
+
+/* Botón hamburguesa fijo a la derecha */
+/* Botón base */
+.menu-toggle{
+  --size: 42px;
+  width: var(--size); height: var(--size);
+  display: grid; place-items: center;
+  background: transparent;
+  border: 1px solid rgba(212,175,55,.45);
+  border-radius: 10px;
+  cursor: pointer;
+  color: #fff;
+}
+
+/* Iconos */
+.menu-toggle .icon-bars,
+.menu-toggle .icon-down{
+  font-size: 1.2rem; line-height: 1; /* iguales en tamaño */
+}
+
+/* Por defecto: se ve hamburguesa, se oculta flecha */
+.menu-toggle .icon-down{ display: none; }
+
+/* Cuando está abierto: muestra flecha hacia abajo */
+.menu-toggle[aria-expanded="true"] .icon-bars{ display: none; }
+.menu-toggle[aria-expanded="true"] .icon-down{ display: inline-block; }
+
+/* Desktop: ocultar botón y mostrar menú normal */
+@media (min-width: 992px){
+  .menu-toggle{ display: none; }
+}
+
+
+/* Menú móvil: panel bajo el header, alineado a la derecha */
+.nav-collapsible{
+  position: absolute; right: 16px; left: 16px; top: 100%;
+  background: rgba(0,0,0,.9);
+  border: 1px solid rgba(212,175,55,.18);
+  border-radius: 10px; overflow: hidden;
+  transition: opacity .25s ease, visibility .25s ease;
+  opacity: 0; visibility: hidden;
+}
+.nav-collapsible.open{ opacity: 1; visibility: visible; }
+.nav-collapsible > ul{
+  list-style: none; margin: 0; padding: 10px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.nav-collapsible a{
+  color: #fff; text-decoration: none; font-weight: 600;
+  padding: 10px 8px; display: block; border-radius: 8px;
+}
+.nav-collapsible a:hover{ color: #d4af37; background: rgba(212,175,55,.08); }
+
+/* ===== Desktop (>992px): mostrar menú horizontal y ocultar hamburguesa ===== */
+@media (min-width: 992px){
+  .menu-toggle{ display: none; }
+  .nav-collapsible{
+    position: static; opacity: 1; visibility: visible; border: 0; background: transparent;
+  }
+  .nav-collapsible[hidden]{ display: block !important; } /* ignora hidden en desktop */
+  .nav-collapsible > ul{
+    flex-direction: row; justify-content: flex-end; gap: clamp(12px, 2vw, 26px);
+    padding: 0; 
+  }
+  .nav-collapsible a{ padding: 8px 6px; border-radius: 6px; }
+}
+
+
+
+/* ====== HERO ====== */
+.hero {
+  min-height: 80vh; /* altura flexible */
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 0 var(--container-pad);
+  position: relative;
+  overflow: hidden;
+  background: url("../assets/img/portada.jpg") center/cover no-repeat fixed;
+}
+@supports not (background-attachment: fixed){
+  .hero{ background-attachment: scroll; }
+}
+
+.hero::before,
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+.hero::before { background: rgba(0,0,0,0.35); }
+.hero::after { background: linear-gradient(to bottom, rgba(0,0,0,0.25), rgba(0,0,0,0.55)); }
+
+.hero-text { position: relative; z-index: 1; max-width: 1100px; margin-inline: auto; }
+.hero h1 span { color: #d4af37; }
+.hero .slogan {
+  font-size: clamp(1rem, 0.7vw + 0.9rem, 1.25rem);
+  margin: 15px 0;
+  color: #ddd;
+  font-style: italic;
+}
+.hero-buttons { margin-top: 20px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn-primary, .btn-secondary {
+  padding: 12px 22px;
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: 0.3s;
+}
+.btn-primary {
+  background: #d4af37; color: #000; 
+}
+.btn-primary:hover { background: #fff; color: #000; }
+.btn-secondary {
+  border: 2px solid #d4af37; color: #d4af37;
+}
+.btn-secondary:hover { background: #d4af37; color: #000; }
+
+/* ====== SECTIONS ====== */
+.section {
+  padding: clamp(48px, 6vw, 90px) var(--container-pad);
+  text-align: center;
+}
+.dark-bg { background: #1a1a1a; }
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: clamp(14px, 2.2vw, 25px);
+  justify-items: center;
+}
+
+.card {
+  background: #222;
+  padding: clamp(16px, 1.5vw, 20px);
+  border-radius: 15px;
+  width: 100%;
+  max-width: 320px;
+  transition: transform 0.3s, box-shadow 0.3s, border-color .3s;
+  border: 1px solid transparent;
+  grid-column: span 12; /* móvil: 1 por fila */
+}
+.card:hover {
+  transform: translateY(-6px);
+  border-color: #d4af37;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+}
+.card img {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  display: block;
+}
+/* ===== PRECIOS ===== */ .price-cards { display: flex; flex-direction: column; gap: 15px; max-width: 800px; margin: 0 auto; } .price-card { background: #111; color: #fff; padding: 15px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: transform 0.2s ease, background 0.3s; } .price-card:hover { background: #1c1c1c; transform: scale(1.02); } .price-icon { background: #d4af37; color: #fff; font-weight: bold; padding: 15px; border-radius: 8px; font-size: 0.9rem; min-width: 80px; text-align: center; } .price-info { flex: 1; margin-left: 15px; } .price-info h3 { margin: 0; font-size: 1.1rem; } .price-info p { margin: 5px 0 0; font-size: 0.9rem; color: #ccc; } .price-info a { color: #d4af37; text-decoration: none; } .price-info a:hover { text-decoration: underline; } .price-value { font-weight: bold; font-size: 1.1rem; white-space: nowrap; }
+
+/* ====== FOOTER ====== */
+footer {
+  text-align: center;
+  padding: 20px var(--container-pad);
+  background: #000;
+  font-size: 0.9rem;
+  color: #aaa;
+}
+footer p { margin: 0; }
+#icon{ color: #d4af37; }
+
+/* ====== WHATSAPP FLOAT BUTTON ====== */
+.whatsapp-float {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #25d366;
+  color: white;
+  font-size: 2rem;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  text-decoration: none;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  z-index: 1000;
+  transition: transform 0.3s ease;
+  animation: float 2.5s ease-in-out infinite;
+}
+.whatsapp-float:hover { transform: scale(1.1); }
+
+@keyframes float {
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-10px); }
+  100% { transform: translateY(0); }
+}
+
+/* ====== RESPONSIVE BREAKPOINTS ====== */
+
+/* >= 768px: dos columnas en cards, precios más anchos */
+@media (min-width: 768px){
+  .cards .card { grid-column: span 6; }           /* 2 por fila */
+  .price-card { grid-column: span 6; }            /* 2 por fila */
+  .navbar { flex-wrap: nowrap; }
+}
+
+/* >= 992px: tres columnas en cards, precios en 3 por fila */
+@media (min-width: 992px){
+  .cards .card { grid-column: span 4; }           /* 3 por fila */
+  .price-card { grid-column: span 4; }            /* 3 por fila */
+  .hero { min-height: 88vh; }
+}
+
+/* >= 1200px: cards más compactas, contenedores centrados */
+@media (min-width: 1200px){
+  .cards { justify-items: stretch; }
+  .card { max-width: 360px; margin-inline: auto; }
+  .price-cards { gap: 18px; }
+}
+
+/* <= 640px: navbar en dos líneas y botones apilados */
+@media (max-width: 640px){
+  .navbar {
+    padding: 10px 14px;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .navbar ul{
+    width: 100%;
+    justify-content: center;
+    gap: 10px 14px;
+  }
+  .btn-primary, .btn-secondary {
+    width: 100%;
+    max-width: 360px;
+  }
+  .whatsapp-float {
+    bottom: 14px;
+    right: 14px;
+    width: 54px; height: 54px; font-size: 1.8rem;
+  }
+}
+
+/* <= 420px: tipografías y paddings más pequeños */
+@media (max-width: 420px){
+  :root{ --container-pad: 14px; }
+  .price-icon { padding: 10px; min-width: 64px; font-size: 0.8rem; }
+  .price-card { grid-template-columns: auto 1fr; }
+  .price-value { justify-self: start; }
+}
+  
+/* Accesibilidad: reduce animaciones si el usuario lo prefiere */
+@media (prefers-reduced-motion: reduce){
+  * { animation: none !important; transition: none !important; }
+}

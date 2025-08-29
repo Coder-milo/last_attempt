@@ -1,0 +1,76 @@
+<!-- app/pages/register.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - Barbexa</title>
+  <!-- Enlace a tu CSS -->
+  <link rel="stylesheet" href="../css/register.css">
+  <!-- Iconos (opcional, para el ojo de contraseña) -->
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <!-- Fondo -->
+  <div class="auth-bg"></div>
+
+  <!-- Contenedor principal -->
+  <div class="login-container">
+    <div class="login-form card">
+      <!-- Logo -->
+      <div class="logo">
+        <img src="/assets/img/logo.png" alt="Barbexa Logo">
+      </div>
+
+      <!-- Divider -->
+      <div class="divider-text">
+        <span><h2 class="card-title">REGISTER</h2></span>
+      </div>
+
+      <!-- Formulario -->
+      <form id="registerForm" novalidate>
+        <!-- Nombre -->
+        <div class="field">
+          <label for="name">Full name</label>
+          <input id="name" name="name" type="text" placeholder="Your name" required>
+          <small class="error"></small>
+        </div>
+
+        <!-- Email -->
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" placeholder="youremail@example.com" required>
+          <small class="error"></small>
+        </div>
+
+        <!-- Contraseña -->
+        <div class="field password-field">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" placeholder="••••••••" minlength="6" required>
+          <button class="toggle-pass" type="button" aria-label="Mostrar/ocultar contraseña">
+            <i class="fa-solid fa-eye"></i>
+          </button>
+          <small class="error"></small>
+        </div>
+
+        <!-- Términos -->
+        <div class="terms">
+          <label class="checkbox">
+            <input id="terms" type="checkbox" required>
+            <span>I accept <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a>.</span>
+          </label>
+          <small class="error" id="termsError"></small>
+        </div>
+
+        <!-- Botón principal -->
+        <button class="btn primary" type="submit">Create account</button>
+      </form>
+
+      <!-- Link alternativo -->
+      <p class="small alt-link">You have an account? <a href="/login" data-link>Sign in</a></p>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,231 @@
+/* ====== GLOBAL ====== */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  background: #111;
+  color: #f5f5f5;
+}
+
+h1, h2 {
+  margin: 0 0 15px;
+  font-family: 'Playfair Display', serif;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  transition: all 0.3s ease;
+}
+
+/* ====== HEADER ====== */
+.header {
+  background: #1a1a1a;
+  padding: 20px;
+  text-align: center;
+  border-bottom: 2px solid #d4af37;
+}
+
+.header h1 {
+  color: #d4af37;
+  font-size: 1.8rem;
+}
+
+/* ====== NAV TABS ====== */
+.tabs {
+  display: flex;
+  justify-content: center;
+  background: #222;
+  padding: 10px;
+  gap: 10px;
+}
+
+.tab-btn {
+  background: #333;
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.tab-btn.active, .tab-btn:hover {
+  background: #d4af37;
+  color: #111;
+}
+
+/* ====== CONTENT ====== */
+.content {
+  padding: 20px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.tab-content {
+  display: none;
+  animation: fadeIn 0.4s ease;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ====== FORMS ====== */
+.form-card {
+  display: grid;
+  gap: 12px;
+  background: #1a1a1a;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.6);
+  margin-bottom: 20px;
+}
+
+.form-card input {
+  padding: 10px;
+  border: 1px solid #333;
+  border-radius: 6px;
+  background: #111;
+  color: #fff;
+}
+
+.btn-primary {
+  background: #d4af37;
+  color: #111;
+  font-weight: bold;
+}
+.btn-primary:hover { background: #c19c2d; }
+
+/* ====== LISTS ====== */
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.list li {
+  background: #1a1a1a;
+  margin-bottom: 10px;
+  padding: 15px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Buttons dentro de listas */
+.btn-success { background: #2ecc71; color: #fff; }
+.btn-danger { background: #e74c3c; color: #fff; }
+
+.btn-success:hover { background: #27ae60; }
+.btn-danger:hover { background: #c0392b; }
+
+/* ====== REPORTES ====== */
+.reports-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.report-card {
+  background: #1a1a1a;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0,0,0,0.6);
+}
+
+.report-card i {
+  font-size: 2rem;
+  color: #d4af37;
+  margin-bottom: 10px;
+}
+
+
+/* ====== FLUID BASICS (sin romper estilos) ====== */
+:root{
+  --pad-x: clamp(14px, 3vw, 28px);
+  --fs-h1: clamp(1.4rem, 1.2vw + 1.1rem, 1.8rem);
+  --fs-h2: clamp(1.05rem, 0.6vw + 0.9rem, 1.3rem);
+  --fs-btn: clamp(0.9rem, 0.4vw + 0.85rem, 1rem);
+}
+
+.header{ padding: clamp(12px, 2.5vw, 20px) var(--pad-x); }
+.header h1{ font-size: var(--fs-h1); }
+h2{ font-size: var(--fs-h2); }
+
+.content{
+  padding: 20px var(--pad-x);
+  max-width: min(1000px, 100%);
+}
+
+/* Botones y campos: targets cómodos y fluidos */
+button{
+  padding: clamp(10px, 1vw + 8px, 14px) clamp(14px, 1.2vw + 10px, 18px);
+  font-size: var(--fs-btn);
+}
+.form-card input{
+  font-size: clamp(0.95rem, 0.4vw + 0.85rem, 1rem);
+}
+
+/* ====== TABS responsive ====== */
+.tabs{
+  padding: 10px var(--pad-x);
+  gap: clamp(8px, 2vw, 10px);
+  flex-wrap: wrap;                  /* permite saltar de línea */
+  overflow-x: auto;                 /* si hay muchas, que se desplacen */
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+.tab-btn{
+  flex: 0 0 auto;                   /* evita que se aplasten */
+  white-space: nowrap;
+  padding: clamp(10px, 1vw + 8px, 12px) clamp(14px, 1vw + 10px, 18px);
+  font-size: clamp(0.9rem, 0.4vw + 0.85rem, 1rem);
+}
+
+/* ====== FORM & LISTS: se acomodan en pantallas pequeñas ====== */
+/* Uniformar inputs y botón dentro de .form-card */
+.form-card input,
+.form-card .btn-primary{
+  width: 100% !important;
+  display: block;
+  box-sizing: border-box;
+  border-radius: 10px;          /* mismo radio para todos */
+  padding: 12px 16px;           /* mismo padding horizontal */
+}
+
+/* El botón tenía estilo visual distinto al no tener borde */
+.form-card .btn-primary{
+  border: 1px solid #333;       /* igual que los inputs */
+}
+
+/* Quita reglas viejas que achicaban ancho en móvil */
+@media (max-width: 560px){
+  .form-card{ gap: 10px; }
+  .list li{
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .list li button{ width: 100% !important; }
+}
+
+/* Elimina overrides que causan desalineación */
+@media (max-width: 400px){
+  .form-card input,
+  .form-card .btn-primary,
+  .list li button{
+    width: 100% !important;     /* evita 92% / 80% */
+  }
+}
+
+
+/* Accesibilidad: reduce animaciones si el usuario lo prefiere */
+@media (prefers-reduced-motion: reduce){
+  *{ animation: none !important; transition: none !important; }
+}
