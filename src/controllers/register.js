@@ -1,102 +1,83 @@
-export function init() {
+// app/controllers/register.js
+import { apiRequest } from "../api/request.js";
+import { isEmail, isValidName, validatePassword, acceptedTerms, validateInputs } from "../services/validations.js";
 
-document.addEventListener("DOMContentLoaded", () => {
+export function init() {
   const form = document.getElementById("registerForm");
   if (!form) return;
 
   const fields = {
-    name: document.getElementById("name"),
-    email: document.getElementById("email"),
+    name:     document.getElementById("name"),
+    email:    document.getElementById("email"),
     password: document.getElementById("password"),
-    confirm: document.getElementById("confirm"),
-    terms: document.getElementById("terms"),
+    terms:    document.getElementById("terms"),
   };
 
-  // Helpers
-  const isEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(v).trim());
-
   const setError = (input, msg) => {
+    if (!input) return;
     const small = input.closest(".field")?.querySelector(".error");
     if (small) small.textContent = msg || "";
     input.classList.toggle("has-error", !!msg);
   };
 
   const clearErrors = () => {
-    document.querySelectorAll(".error").forEach((s) => (s.textContent = ""));
-    document.querySelectorAll(".has-error").forEach((el) =>
-      el.classList.remove("has-error")
-    );
+    form.querySelectorAll(".error").forEach((s) => (s.textContent = ""));
+    form.querySelectorAll(".has-error").forEach((el) => el.classList.remove("has-error"));
+    const termsErr = document.getElementById("termsError");
+    if (termsErr) termsErr.textContent = "";
   };
 
-  const toggleButtons = document.querySelectorAll(".toggle-pass");
-  toggleButtons.forEach((btn) => {
+  // Mostrar/ocultar contraseña
+  form.querySelectorAll(".toggle-pass").forEach((btn) => {
     btn.addEventListener("click", () => {
-      const input = btn.previousElementSibling; // el <input> antes del botón
+      const input = btn.previousElementSibling;
       const icon = btn.querySelector("i");
       if (!input) return;
-
-      if (input.type === "password") {
-        input.type = "text";
-        if (icon) {
-          icon.classList.remove("fa-eye");
-          icon.classList.add("fa-eye-slash");
-        }
-      } else {
-        input.type = "password";
-        if (icon) {
-          icon.classList.remove("fa-eye-slash");
-          icon.classList.add("fa-eye");
-        }
+      input.type = input.type === "password" ? "text" : "password";
+      if (icon) {
+        icon.classList.toggle("fa-eye");
+        icon.classList.toggle("fa-eye-slash");
       }
     });
   });
-
-  // POST helper
-  async function postJSON(url, body) {
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) {
-      const message =
-        data?.message ||
-        data?.error ||
-        (Array.isArray(data?.errors) && data.errors[0]?.msg) ||
-        "Error en la solicitud";
-      throw new Error(message);
-    }
-    return data;
-  }
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     clearErrors();
 
+    const name     = fields.name?.value ?? "";
+    const email    = fields.email?.value ?? "";
+    const password = fields.password?.value ?? "";
+    const termsOk  = !!fields.terms?.checked;
+
+    // === Validaciones usando TUS funciones ===
     let ok = true;
 
-    if (!fields.name.value.trim()) {
+    if (!validateInputs(name)) {
       setError(fields.name, "Ingresa tu nombre.");
       ok = false;
-    }
-
-    if (!isEmail(fields.email.value)) {
-      setError(fields.email, "Ingresa un correo válido.");
+    } else if (!isValidName(name)) {
+      setError(fields.name, "Nombre inválido.");
       ok = false;
     }
 
-    if (fields.password.value.length < 6) {
-      setError(fields.password, "Mínimo 6 caracteres.");
+    if (!validateInputs(email)) {
+      setError(fields.email, "Ingresa tu correo.");
+      ok = false;
+    } else if (!isEmail(email)) {
+      setError(fields.email, "Correo no válido.");
       ok = false;
     }
 
-    if (fields.confirm.value !== fields.password.value) {
-      setError(fields.confirm, "Las contraseñas no coinciden.");
+    if (!validateInputs(password)) {
+      setError(fields.password, "Ingresa tu contraseña.");
+      ok = false;
+    } else if (!validatePassword(password)) {
+      setError(fields.password, "Min 6 caracteres, mayúscula, minúscula y carácter especial.");
       ok = false;
     }
 
-    if (!fields.terms.checked) {
+    if (!acceptedTerms(termsOk)) {
       const termsErr = document.getElementById("termsError");
       if (termsErr) termsErr.textContent = "Debes aceptar los términos.";
       ok = false;
@@ -104,42 +85,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!ok) return;
 
-    // Loading state (simple)
+    // === Envío a la API (usa tu apiRequest con cookies si ya lo configuraste) ===
     const submitBtn = form.querySelector('button[type="submit"]');
     const prevText = submitBtn.textContent;
     submitBtn.disabled = true;
     submitBtn.textContent = "Creando cuenta...";
 
     try {
-      // Ajusta el endpoint a tu backend real
       const payload = {
-        name: fields.name.value.trim(),
-        email: fields.email.value.trim(),
-        password: fields.password.value,
+        username: name.trim(),   // el backend pide 'username'
+        email: email.trim(),
+        password,
+        code_name: 'CLIENT_03'
       };
 
-      const data = await postJSON(`${API_BASE}/auth/register`, payload);
+      await apiRequest('POST', '/register', payload);
 
-      // Si tu backend devuelve token:
-      if (data?.token) {
-        localStorage.setItem("token", data.token);
-      }
-      // Si devuelve usuario:
-      if (data?.user) {
-        localStorage.setItem("user", JSON.stringify(data.user));
-      }
-
-      // Redirige a login o dashboard
-      // window.location.href = "/app.html";
-      window.location.href = "login.html";
+      // Redirige al login (o usa tu router si prefieres)
+      window.location.href = "/login";
+      // o: import { navegation } from "../router.js"; navegation("/login");
     } catch (err) {
-      // Muestra error arriba del formulario o cercano a email
       setError(fields.email, err.message || "No se pudo crear la cuenta.");
     } finally {
       submitBtn.disabled = false;
       submitBtn.textContent = prevText;
     }
   });
-});
-
 }
