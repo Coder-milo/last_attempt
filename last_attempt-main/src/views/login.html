@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Barbexa</title>
+  <!-- Enlace a tu CSS -->
+  <link rel="stylesheet" href="../css/login.css">
+</head>
+<body>
+
+  <!-- Fondo -->
+  <div class="background"></div>
+
+  <!-- Contenedor principal -->
+  <div class="login-box">
+    <!-- Logo arriba del login -->
+    <div class="logo">
+      <img src="/assets/img/logo.png" alt="Barbexa Logo">
+    </div>
+
+    <!-- Divider -->
+    <div class="divider-text">
+      <span>
+        <h2 class="login-title">LOGIN</h2>
+      </span>
+    </div>
+
+    <!-- Inputs -->
+    <form id="loginForm">
+      <div class="input-group">
+        <input type="text" placeholder="User" name="username" required>
+      </div>
+      <div class="input-group">
+        <input type="password" placeholder="Password" name="password" required>
+      </div>
+
+      <!-- Opciones -->
+      <div class="options">
+        <label><input type="checkbox" name="remember"> Remind me</label>
+        <a href="#">Forgot your password?</a>
+      </div>
+
+      <!-- Botón -->
+      <button type="submit" class="btn">Login</button>
+
+      <!-- Registro -->
+      <p class="register-text">
+        Don't have an account yet? <a href="/register" data-link>Register</a>
+      </p>
+    </form>
+  </div>
+
+</body>
+</html>

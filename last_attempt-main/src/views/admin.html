@@ -6,7 +6,7 @@
   <title>Admin Panel - Barbexa</title>
   
   <link rel="icon" type="image/png" href="../assets/img/logo2.png">
-  <link rel="stylesheet" href="../src/admin.css">
+  <link rel="stylesheet" href="../../public/css/admin.css">
 </head>
 <body>
   <!-- HEADER -->
@@ -93,6 +93,10 @@
     </section>
   </main>
 
-  <script src="../js/admin.js"></script>
+    <script type="module">
+    import { init } from "../controllers/admin.js";
+    init();
+  </script>
+
 </body>
 </html>

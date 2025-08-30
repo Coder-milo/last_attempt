@@ -18,7 +18,7 @@
   min-height: 100svh;      /* mejor en móviles con barra dinámica */
   margin: 0;
   color: var(--text);
-  background: center/cover no-repeat url(../assets/img/fondo_barberia.png);
+  background-image: url(../assets/img/fondo_barberia.png);
   font-family: "Playfair Display", serif;
   font-optical-sizing: auto;
   font-style: normal;
@@ -30,7 +30,7 @@
 .auth-bg{
   position: fixed;
   inset: 0;
-  background: url("../assets/img/bg-barbershop.jpg") center/cover no-repeat;
+  background-image: url(../assets/img/fondo_barberia.png);
   filter: brightness(0.45);
   z-index: -1;
 }

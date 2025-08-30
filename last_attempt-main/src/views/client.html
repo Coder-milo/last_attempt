@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Appointment - Barbexa</title>
+  <link rel="icon" type="image/png" href="/assets/img/logo2.png">
+
+  <link rel="stylesheet" href="../../public/css/cliente.css">
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">
+      <img src="/assets/img/logo2.png" alt="Barbexa">
+
+      <h1>Barbexa</h1>
+    </div>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">My Appointments</a>
+      <a href="#">Profile</a>
+      <a href="#">Logout</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <!-- Form -->
+    <section class="form-card">
+      <h2>Book Appointment</h2>
+      <form id="formCita" class="grid-form">
+        <div>
+          <label for="barbero">Select Barber</label>
+          <select id="barbero" required>
+            <option value="">-- Choose a barber --</option>
+            <option value="1">John Perez</option>
+            <option value="2">Carlos Gomez</option>
+            <option value="3">Luis Martinez</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="tipoCorte">Type of Cut</label>
+          <select id="tipoCorte" required>
+            <option value="">-- Choose a cut --</option>
+            <option value="Classic Cut">Classic Cut</option>
+            <option value="Modern Cut">Modern Cut</option>
+            <option value="Fade">Fade</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="fecha">Select Date</label>
+          <input type="date" id="fecha" required>
+        </div>
+
+        <div>
+          <label for="hora">Select Time</label>
+          <input type="time" id="hora" required>
+        </div>
+
+        <div class="form-btn">
+          <button type="submit">Book Appointment</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Appointment list -->
+    <section class="citas-card">
+      <h2>My Appointments</h2>
+      <div id="listaCitas" class="citas-list">
+        <!-- Appointments will be displayed here -->
+        <p class="empty">You don’t have any appointments yet.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="../js/cliente.js"></script>
+</body>
+</html>
