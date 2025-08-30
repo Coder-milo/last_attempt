@@ -1,5 +1,7 @@
 // index.js
-document.addEventListener("DOMContentLoaded", () => {
+
+export function init() {
+  document.addEventListener("DOMContentLoaded", () => {
 
   // =====Scroll suave para el navbar ======
   const navLinks = document.querySelectorAll("header nav ul li a[href^='#']");
@@ -97,3 +99,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
     
 })();
+}
+

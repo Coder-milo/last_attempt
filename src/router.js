@@ -1,124 +1,86 @@
-// ==== MAPAS (ajusta rutas a tu estructura) ====
-// Vista por ruta
-export const routes = {
-  "/":          "/src/views/landing.html",
-  "/landing":   "/src/views/landing.html",
-  "/login":     "/src/views/login.html",
-  "/register":  "/src/views/register.html",
-  "/admin":     "/src/views/admin.html",
-  "/barbero":   "/src/views/barbero.html",
-  "/cliente":   "/src/views/cliente.html",
-  "/404":       "/src/views/404.html",
+// router.js
+// ✅ Si usas guards otra vez, los reactivas; por ahora van fuera.
+const routes = {
+  '/'         : '/src/views/landing.html',
+  '/login'    : '/src/views/login.html',
+  '/register' : '/src/views/register.html',
+  '/client'   : '/src/views/client.html',
+  '/barbers'  : '/src/views/barbers.html',
+  '/admin'    : '/src/views/admin.html'
 };
 
-// Controller por ruta (módulos ES)
-export const controllers = {
-  "/landing":   "./src/controllers/landing.js",
-  "/login":     "/src/controllers/login.js",
-  "/register":  "/src/controllers/register.js",
-  "/admin":     "/src/controllers/admin.js",
-  "/barbero":   "/src/controllers/barbero.js",
-  "/cliente":   "/src/controllers/cliente.js",
-  "/404":       "/src/controllers/404.js",
+const controllers = {
+  '/'         : '/src/controllers/landing.js',
+  '/login'    : '/src/controllers/login.js',
+  '/register' : '/src/controllers/register.js',
+  '/client'   : '/src/controllers/client.js',
+  '/barbers'  : '/src/controllers/barbers.js',
+  '/admin'    : '/src/controllers/admin.js',
+  '/404'      : '/src/controllers/404.js',
 };
 
-// Reglas de acceso por ruta
-// Devuelve true si PERMITE entrar, false si no.
-export const guards = {
-  "/login":    (user) => !user,                        // solo invitados
-  "/register": (user) => !user,                        // solo invitados
-  "/admin":    (user) => user?.rol === "admi",
-  "/barbero":  (user) => user?.rol === "barbero",
-  "/cliente":  (user) => user?.rol === "cliente",
-};
+const app = document.getElementById('app');
 
-// ====== Router ======
-const app = document.getElementById("app");
-
-// De dónde sacamos el "user"
-function getCurrentUser() {
-  try { return JSON.parse(localStorage.getItem("user")); }
-  catch { return null; }
-}
-
-// Dónde redirigir si un guard bloquea
-function deniedRedirect(user) {
-  return user ? "/landing" : "/login"; // personaliza si quieres
-}
-
-// Extrae contenido útil de una vista (si tiene #view lo usa; si no, body entero)
-function pickView(htmlText) {
-  const doc = new DOMParser().parseFromString(htmlText, "text/html");
-  const view = doc.querySelector("#view");
-  return view ? view.innerHTML : doc.body.innerHTML;
-}
-
-// Carga e inyecta la vista
-async function loadView(path) {
-  const viewUrl = routes[path] || routes["/404"];
-  const res = await fetch(viewUrl, { cache: "no-cache" });
-  if (!res.ok) throw new Error(HTTP ${res.status} cargando ${viewUrl});
-  app.innerHTML = pickView(await res.text());
-}
-
-// Importa y ejecuta el controller si existe
-async function runController(path) {
-  const modPath = controllers[path];
-  if (!modPath) return;
-  const mod = await import(modPath);
-  if (typeof mod?.default === "function") {
-    await mod.default();            // si exportas una función
-  } else if (typeof mod?.default?.init === "function") {
-    await mod.default.init();       // si exportas { init(){} }
-  }
-}
-
-// Maneja la navegación
-async function handleRoute() {
-  let path = window.location.pathname || "/";
-  if (!routes[path]) path = "/404";
-
-  // Guard
-  const guard = guards[path];
-  if (guard) {
-    const user = getCurrentUser();
-    const allowed = !!guard(user);
-    if (!allowed) {
-      const to = deniedRedirect(user);
-      if (to !== path) return navigateTo(to);
-      // para evitar bucles, si deniedRedirect devuelve la misma, seguimos
-    }
-  }
-
-  // Render + controller
+// Normaliza el path (quita query/hash y asegura clave del mapa)
+function normalizePath(pathname) {
   try {
-    await loadView(path);
-    await runController(path);
-  } catch (err) {
-    console.error(err);
-    app.innerHTML = <pre style="padding:1rem;color:#b00">${err.message}</pre>;
+    const url = new URL(pathname, location.origin);
+    const p = url.pathname.replace(/\/+$/, '') || '/'; // quita / final
+    return routes[p] ? p : '/404';
+  } catch {
+    return '/404';
   }
 }
 
-// Navegación programática
-export function navigateTo(url) {
-  if (window.location.pathname === url) return;
-  history.pushState(null, "", url);
-  handleRoute();
+export async function loadView(path) {
+  const normalized = normalizePath(path);
+  const viewUrl = routes[normalized] || routes['/404'];
+
+  try {
+    const res = await fetch(viewUrl, { cache: 'no-cache' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    app.innerHTML = await res.text();
+
+    const ctlrPath = controllers[normalized];
+    if (ctlrPath) {
+      // ✅ Con Vite usa import absoluto/relativo válido
+      const module = await import(/* @vite-ignore */ ctlrPath);
+      if (module?.init) module.init();
+    }
+  } catch (err) {
+    console.error('loadView error:', err);
+    app.innerHTML = `<h1>Unexpected error while loading the view.</h1>`;
+  }
 }
 
-// Inicializa router
-export function initRouter() {
-  // Intercepta <a data-link>
-  document.addEventListener("click", (e) => {
-    const a = e.target.closest("a[data-link]");
-    if (a && a.getAttribute("href")) {
-      e.preventDefault();
-      const to = new URL(a.href).pathname;
-      navigateTo(to);
-    }
-  });
+export function navigation(path) {
+  const normalized = normalizePath(path);
+  if (normalized !== location.pathname) {
+    history.pushState(null, '', normalized);
+  }
+  loadView(normalized);
+}
 
-  window.addEventListener("popstate", handleRoute);
-  handleRoute();
+// Navegación por botones del navegador
+window.addEventListener('popstate', () => {
+  loadView(location.pathname);
+});
+
+// Intercepta clics en <a data-link> y también <a> internos
+export function navigationTag() {
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a');
+    if (!a) return;
+
+    const href = a.getAttribute('href') || a.getAttribute('data-link');
+    if (!href) return;
+
+    // Solo intercepta enlaces internos (mismo origen) y que no tengan target _blank
+    const isInternal = href.startsWith('/') && !a.target;
+    const hasDataLink = a.hasAttribute('data-link');
+    if (!isInternal && !hasDataLink) return;
+
+    e.preventDefault();
+    navigation(href);
+  });
 }
