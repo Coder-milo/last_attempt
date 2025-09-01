@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Barbexa</title>
+  <link rel="stylesheet" href="../../public/assets/css/login.css">
+</head>
+<body>
+  <div class="background"></div>
+
+  <div class="login-box">
+    <div class="logo">
+      <img src="/assets/img/logo.png" alt="Barbexa Logo">
+    </div>
+
+    <div class="divider-text">
+      <span><h2 class="login-title">LOGIN</h2></span>
+    </div>
+
+    <form id="loginForm" novalidate>
+      <div class="input-group field">
+        <input id="email" type="email" placeholder="Email" name="email" required>
+        <small class="error"></small>
+      </div>
+
+      <div class="input-group field password-field">
+        <input id="password" type="password" placeholder="Password" name="password" required>
+        <small class="error"></small>
+      </div>
+
+      <div class="options">
+        <label><input type="checkbox" name="remember"> Remind me</label>
+        <a href="#">Forgot your password?</a>
+      </div>
+
+      <button type="submit" class="btn">Login</button>
+
+      <p class="register-text">
+        Don't have an account yet? <a href="/register" data-link>Register</a>
+      </p>
+    </form>
+  </div>
+</body>
+</html>
