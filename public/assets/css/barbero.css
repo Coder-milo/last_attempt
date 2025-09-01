@@ -260,3 +260,22 @@ td.actions-cell .statusSel{
   flex:1;
   min-width:140px;
 }
+
+.table-tools{
+  display:flex; gap:12px; align-items:center; margin-bottom:12px; flex-wrap:wrap;
+}
+.input, .select{ padding:10px 12px; border-radius:8px; border:1px solid #333; background:#111; color:#eee; }
+.table{ width:100%; border-collapse:collapse; overflow:auto; }
+    .table th, .table td{ padding:12px; border-bottom:1px solid #333; text-align:left; }
+    .table th{ color:#f9c74f; font-weight:700; background:#141414; position:sticky; top:0; }
+    .status-pill{ padding:4px 10px; border-radius:999px; font-weight:700; font-size:.85rem; }
+    .st-PENDIENTE{ background:#3a2b00; color:#f6d365; }
+    .st-CONFIRMADA{ background:#073d2b; color:#4ade80; }
+    .st-COMPLETADA{ background:#0b2a43; color:#60a5fa; }
+    .st-CANCELADA{ background:#3a0c0c; color:#f87171; }
+    .muted{ color:#aaa; font-size:.9rem; }
+    .right{ margin-left:auto; }
+    .btn{ background:#f9c74f; color:#111; border:none; border-radius:8px; padding:10px 14px; font-weight:700; cursor:pointer; }
+    .btn:hover{ filter:brightness(1.05); }
+    .btn.danger{ background:#ef4444; color:#fff; }
+  

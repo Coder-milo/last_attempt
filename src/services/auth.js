@@ -6,10 +6,10 @@ const ENDPOINTS = {
 };
 
 /**
- * Get logged-in user (via /profile)
- * Requires JWT cookie (HttpOnly)
+ * Get the logged-in user from the backend.
+ * Requires a valid JWT cookie (HttpOnly).
  * 
- * @returns {Promise<object|null>} user object or null if not logged in
+ * @returns {Promise<object|null>} Returns user object if logged in, otherwise null
  */
 export async function getLoggedUser() {
   try {
@@ -22,10 +22,9 @@ export async function getLoggedUser() {
 }
 
 /**
- * Logout user (via /logout)
- * Clears JWT cookie in backend
+ * Logout the user by clearing the JWT cookie in the backend.
  * 
- * @returns {Promise<object>} { message: "logout successfully" }
+ * @returns {Promise<object>} Returns { message: "logout successfully" }
  */
 export async function logoutUser() {
   return apiRequest("POST", ENDPOINTS.logout, {});

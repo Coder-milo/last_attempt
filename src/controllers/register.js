@@ -13,6 +13,7 @@ export function init() {
     terms:    document.getElementById("terms"),
   };
 
+  // Show error message under input
   const setError = (input, msg) => {
     if (!input) return;
     const small = input.closest(".field")?.querySelector(".error");
@@ -20,6 +21,7 @@ export function init() {
     input.classList.toggle("has-error", !!msg);
   };
 
+  // Clear all previous error messages
   const clearErrors = () => {
     form.querySelectorAll(".error").forEach((s) => (s.textContent = ""));
     form.querySelectorAll(".has-error").forEach((el) => el.classList.remove("has-error"));
@@ -27,7 +29,7 @@ export function init() {
     if (termsErr) termsErr.textContent = "";
   };
 
-  // Mostrar/ocultar contraseña
+  // Show/hide password on eye icon click
   form.querySelectorAll(".toggle-pass").forEach((btn) => {
     btn.addEventListener("click", () => {
       const input = btn.previousElementSibling;
@@ -41,6 +43,7 @@ export function init() {
     });
   });
 
+  // Form submit handler
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     clearErrors();
@@ -50,50 +53,50 @@ export function init() {
     const password = fields.password?.value ?? "";
     const termsOk  = !!fields.terms?.checked;
 
-    // === Validaciones usando TUS funciones ===
+    // === Validations using custom functions ===
     let ok = true;
 
     if (!validateInputs(name)) {
-      setError(fields.name, "Ingresa tu nombre.");
+      setError(fields.name, "Enter your name.");
       ok = false;
     } else if (!isValidName(name)) {
-      setError(fields.name, "Nombre inválido.");
+      setError(fields.name, "Invalid name.");
       ok = false;
     }
 
     if (!validateInputs(email)) {
-      setError(fields.email, "Ingresa tu correo.");
+      setError(fields.email, "Enter your email.");
       ok = false;
     } else if (!isEmail(email)) {
-      setError(fields.email, "Correo no válido.");
+      setError(fields.email, "Invalid email.");
       ok = false;
     }
 
     if (!validateInputs(password)) {
-      setError(fields.password, "Ingresa tu contraseña.");
+      setError(fields.password, "Enter your password.");
       ok = false;
     } else if (!validatePassword(password)) {
-      setError(fields.password, "Min 6 caracteres, mayúscula, minúscula y carácter especial.");
+      setError(fields.password, "At least 6 characters, one uppercase, one lowercase and one special character.");
       ok = false;
     }
 
     if (!acceptedTerms(termsOk)) {
       const termsErr = document.getElementById("termsError");
-      if (termsErr) termsErr.textContent = "Debes aceptar los términos.";
+      if (termsErr) termsErr.textContent = "You must accept the terms.";
       ok = false;
     }
 
     if (!ok) return;
 
-    // === Envío a la API (usa tu apiRequest con cookies si ya lo configuraste) ===
+    // === Send data to API ===
     const submitBtn = form.querySelector('button[type="submit"]');
     const prevText = submitBtn.textContent;
     submitBtn.disabled = true;
-    submitBtn.textContent = "Creando cuenta...";
+    submitBtn.textContent = "Creating account...";
 
     try {
       const payload = {
-        username: name.trim(),   // el backend pide 'username'
+        username: name.trim(),   // backend expects 'username'
         email: email.trim(),
         password,
         code_name: 'CLIENT_03'
@@ -101,11 +104,11 @@ export function init() {
 
       await apiRequest('POST', '/register', payload);
 
-      // Redirige al login (o usa tu router si prefieres)
+      // Redirect to login page after successful registration
       window.location.href = "/login";
-      // o: import { navegation } from "../router.js"; navegation("/login");
+      // or: import { navegation } from "../router.js"; navegation("/login");
     } catch (err) {
-      setError(fields.email, err.message || "No se pudo crear la cuenta.");
+      setError(fields.email, err.message || "Could not create account.");
     } finally {
       submitBtn.disabled = false;
       submitBtn.textContent = prevText;

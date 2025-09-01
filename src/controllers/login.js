@@ -12,6 +12,7 @@ export function init() {
     password: document.getElementById("password"),
   };
 
+  // Show error message under input
   const setError = (input, msg) => {
     if (!input) return;
     const small = input.closest(".field")?.querySelector(".error");
@@ -19,17 +20,19 @@ export function init() {
     input.classList.toggle("has-error", !!msg);
   };
 
+  // Clear all previous error messages
   const clearErrors = () => {
     form.querySelectorAll(".error").forEach(el => (el.textContent = ""));
     form.querySelectorAll(".has-error").forEach(el => el.classList.remove("has-error"));
   };
 
+  // Decide route based on user role/code
   function routeForUser(user) {
     const code = user?.code_name;
     const role = user?.role || user?.rol;
     if (code === 'ADMIN_01'  || role === 'admin')  return '/admin';
     if (code === 'BARBER_02' || role === 'barber') return '/barbers';
-    return '/client'; // CLIENT_03 u otros
+    return '/client'; // CLIENT_03 or others
   }
 
   form.addEventListener("submit", async (e) => {
@@ -39,46 +42,46 @@ export function init() {
     const email = fields.email?.value ?? "";
     const password = fields.password?.value ?? "";
 
+    // === Validations ===
     let ok = true;
     if (!validateInputs(email)) {
-      setError(fields.email, "Ingresa tu correo.");
+      setError(fields.email, "Enter your email.");
       ok = false;
     } else if (!isEmail(email)) {
-      setError(fields.email, "Correo no válido.");
+      setError(fields.email, "Invalid email.");
       ok = false;
     }
     if (!validateInputs(password)) {
-      setError(fields.password, "Ingresa tu contraseña.");
-      ok = false;
-    } else if (!validatePassword(password)) {
-      setError(fields.password, "Mín. 6 caracteres, mayús., minús. y carácter especial.");
+      setError(fields.password, "Enter your password.");
       ok = false;
     }
     if (!ok) return;
 
+    // Disable submit button while processing
     const btn = form.querySelector('button[type="submit"]');
     const prev = btn.textContent;
     btn.disabled = true;
-    btn.textContent = "Iniciando...";
+    btn.textContent = "Signing in...";
 
     try {
-      // 1) Login: el backend setea cookie HttpOnly
+      // 1) Login: backend sets HttpOnly cookie
       await apiRequest("POST", "/login", { email: email.trim(), password });
 
-      // 2) Pide el perfil usando la cookie (credentials: 'include' ya va en apiRequest)
+      // 2) Request profile using the cookie (credentials: 'include' already set in apiRequest)
       const user = await getLoggedUser();
 
       if (!user) {
-        // La cookie no llegó/guardó. Muestra error claro.
-        setError(fields.password, "Sesión no establecida. Verifica CORS y cookies (Secure/ SameSite=None).");
+        // Cookie was not set/stored. Show clear error.
+        setError(fields.password, "Session could not be established.");
         return;
       }
 
-      // 3) Redirige según rol/código
+      // 3) Redirect based on role/code
       const target = routeForUser(user);
-      window.location.href = target; // o usa tu SPA: import { navigation } y navigation(target)
+      window.location.href = target; 
+      // or: import { navigation } and navigation(target)
     } catch (err) {
-      setError(fields.password, err.message || "Credenciales inválidas.");
+      setError(fields.password, err.message || "Invalid credentials.");
     } finally {
       btn.disabled = false;
       btn.textContent = prev;

@@ -1,6 +1,6 @@
 // /src/controllers/barbers.js
 import { apiRequest } from "../api/request.js";
-import { getLoggedUser } from "../services/auth.js";  // ✅ lo integramos
+import { getLoggedUser } from "../services/auth.js";  // ✅ integrated
 
 export async function init(){
   const tbody        = document.querySelector("#reservationsTable tbody");
@@ -10,13 +10,12 @@ export async function init(){
   const btnReload    = document.getElementById("btnReload");
   const btnLogout    = document.getElementById("btnLogout");
 
-  // Toggle del menú móvil
+  // ====== Mobile menu toggle ======
   const menuToggle = document.getElementById("menuToggle");
   const mainMenu   = document.getElementById("mainMenu");
   menuToggle?.addEventListener("click", ()=> mainMenu?.classList.toggle("open"));
 
-
-  // ====== Barber ID via getLoggedUser ======
+  // ====== Barber ID from logged user ======
   let BARBER_ID = null;
   try {
     const user = await getLoggedUser();
@@ -28,20 +27,21 @@ export async function init(){
   }
 
   if (!BARBER_ID) {
-    alert("No barber ID found. Please login again.");
+    alert("Barber ID not found. Please login again.");
     window.location.href = "/login";
     return;
   }
 
   // ====== Local state ======
-  let all = [];   // todas las reservas
-  let view = [];  // vista filtrada
+  let all = [];   // all reservations
+  let view = [];  // filtered view
 
+  // Reservation status mapping
   const STATUS_MAP = {
-    1: "PENDIENTE",
-    2: "CONFIRMADA",
-    3: "COMPLETADA",
-    4: "CANCELADA"
+    1: "PENDING",
+    2: "CONFIRMED",
+    3: "COMPLETED",
+    4: "CANCELLED"
   };
   const NAME_TO_ID = Object.fromEntries(Object.entries(STATUS_MAP).map(([id,nm])=>[nm,id]));
 
@@ -55,6 +55,7 @@ export async function init(){
   };
   const escapeHtml = s => String(s ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
+  // Render reservations into the table
   function paint(list){
     tbody.innerHTML = "";
     if (!list.length){
@@ -64,65 +65,65 @@ export async function init(){
     emptyMsg.style.display = "none";
 
     list.forEach(r=>{
-  const { date: startDate, time: startTime } = toDateParts(r.start_at);
-  const { time: endTime } = toDateParts(r.end_at);
-  const stName = r.status_name || STATUS_MAP[r.status_id] || "PENDIENTE";
+      const { date: startDate, time: startTime } = toDateParts(r.start_at);
+      const { time: endTime } = toDateParts(r.end_at);
+      const stName = r.status_name || STATUS_MAP[r.status_id] || "PENDING";
 
-  const tr = document.createElement("tr");
+      const tr = document.createElement("tr");
 
-  tr.innerHTML = `
-    <td data-label="ID">${r.id}</td>
-    <td data-label="Client">${escapeHtml(r.client_name)}</td>
-    <td data-label="Date">${startDate}</td>
-    <td data-label="Start">${startTime}</td>
-    <td data-label="End">${endTime}</td>
-    <td data-label="Note">${escapeHtml(r.notas || "")}</td>
-    <td data-label="Status">
-      <span class="status-pill st-${stName}">${stName}</span>
-    </td>
-    <td data-label="Change Status" class="actions-cell">
-      <select class="select statusSel">
-        <option value="PENDIENTE"  ${stName==="PENDIENTE"?"selected":""}>PENDING</option>
-        <option value="CONFIRMADA" ${stName==="CONFIRMADA"?"selected":""}>CONFIRMED</option>
-        <option value="COMPLETADA" ${stName==="COMPLETADA"?"selected":""}>COMPLETED</option>
-        <option value="CANCELADA"  ${stName==="CANCELADA"?"selected":""}>CANCELLED</option>
-      </select>
-      <button class="btn btnSaveStatus">Save</button>
-    </td>
-  `;
+      tr.innerHTML = `
+        <td data-label="ID">${r.id}</td>
+        <td data-label="Client">${escapeHtml(r.client_name)}</td>
+        <td data-label="Date">${startDate}</td>
+        <td data-label="Start">${startTime}</td>
+        <td data-label="End">${endTime}</td>
+        <td data-label="Note">${escapeHtml(r.notas || "")}</td>
+        <td data-label="Status">
+          <span class="status-pill st-${stName}">${stName}</span>
+        </td>
+        <td data-label="Change Status" class="actions-cell">
+          <select class="select statusSel">
+            <option value="PENDING"   ${stName==="PENDING"?"selected":""}>PENDING</option>
+            <option value="CONFIRMED" ${stName==="CONFIRMED"?"selected":""}>CONFIRMED</option>
+            <option value="COMPLETED" ${stName==="COMPLETED"?"selected":""}>COMPLETED</option>
+            <option value="CANCELLED" ${stName==="CANCELLED"?"selected":""}>CANCELLED</option>
+          </select>
+          <button class="btn btnSaveStatus">Save</button>
+        </td>
+      `;
 
-  // Guardar status
-  tr.querySelector(".btnSaveStatus").addEventListener("click", async ()=>{
-    const sel = tr.querySelector(".statusSel");
-    const newName = sel.value;
-    const newId   = NAME_TO_ID[newName] ?? 1;
+      // Save new status
+      tr.querySelector(".btnSaveStatus").addEventListener("click", async ()=>{
+        const sel = tr.querySelector(".statusSel");
+        const newName = sel.value;
+        const newId   = NAME_TO_ID[newName] ?? 1;
 
-    const btn = tr.querySelector(".btnSaveStatus");
-    const prev = btn.textContent;
-    btn.disabled = true;
-    btn.textContent = "Saving...";
+        const btn = tr.querySelector(".btnSaveStatus");
+        const prev = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = "Saving...";
 
-    try{
-      await apiRequest("PATCH", `/reservations/${r.id}/status`, { status_id: newId });
-      r.status_id = newId;
-      r.status_name = newName;
-      paint(view);
-    }catch(e){
-      alert(e.message || "Failed to update status");
-    }finally{
-      btn.disabled = false;
-      btn.textContent = prev;
-    }
-  });
+        try{
+          await apiRequest("PATCH", `/reservations/${r.id}/status`, { status_id: newId });
+          r.status_id = newId;
+          r.status_name = newName;
+          paint(view);
+        }catch(e){
+          alert(e.message || "Failed to update status.");
+        }finally{
+          btn.disabled = false;
+          btn.textContent = prev;
+        }
+      });
 
-  tbody.appendChild(tr);
-});
-
+      tbody.appendChild(tr);
+    });
   }
 
+  // Apply filters for time and status
   function applyFilter(){
-    const t = (filterTime?.value || "").trim();        // HH:MM
-    const s = (filterStatus?.value || "").trim();      // status name
+    const t = (filterTime?.value || "").trim();   // HH:MM
+    const s = (filterStatus?.value || "").trim(); // status name
 
     view = all.filter(r=>{
       let ok = true;
@@ -131,7 +132,7 @@ export async function init(){
         ok = ok && (hh === t);
       }
       if (s){
-        const stName = r.status_name || STATUS_MAP[r.status_id] || "PENDIENTE";
+        const stName = r.status_name || STATUS_MAP[r.status_id] || "PENDING";
         ok = ok && (stName === s);
       }
       return ok;
@@ -140,6 +141,7 @@ export async function init(){
     paint(view);
   }
 
+  // Load reservations from API
   async function loadReservations(){
     try {
       const data = await apiRequest("GET", `/reservations/list?barber_id=${BARBER_ID}`);

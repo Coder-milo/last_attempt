@@ -1,8 +1,7 @@
 import { apiRequest } from "../api/request.js";
 import {logoutUser} from '../services/auth.js'
-/* =========================================
-   Helpers
-========================================= */
+
+
 const $  = (sel, ctx=document) => ctx.querySelector(sel);
 const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
 const escapeHtml = (str) =>
@@ -34,9 +33,9 @@ function toast(msg, type='success'){
   setTimeout(()=>{ el.style.opacity='0'; el.style.transform='translateY(-6px)'; setTimeout(()=>el.remove(), 180); }, 3000);
 }
 
-/* =========================================
-   VIEWS
-========================================= */
+
+   //VIEWS
+
 
 /* ---------- Dashboard (fake KPIs) ---------- */
 async function renderDashboard(container){
@@ -68,7 +67,7 @@ async function renderDashboard(container){
   try { barbers  = (await apiRequest("GET", "/barberUser"))?.barberUser || []; } catch {}
   try { services = normServices(await apiRequest("GET", "/services")); } catch {}
 
-  // 👇 /users no trae code_name, así que contamos todos
+ 
   const nUsers    = users.length;
   const nBarbers  = barbers.length;
   const nServices = services.length;
@@ -226,7 +225,7 @@ $("#assignBtn", container)?.addEventListener("click", async ()=>{
     return;
   }
 
-  // 1) Convertir a números
+ // 1) Convert to numbers
   const selected = $$('#as_services_group input[type="checkbox"]:checked', container)
                     .map(c => Number(c.value))
                     .filter(n => Number.isFinite(n));
@@ -246,14 +245,14 @@ $("#assignBtn", container)?.addEventListener("click", async ()=>{
 
  // Assign button
 try {
-  const payload = { services: selected }; // 👈 el backend espera req.body.services
+  const payload = { services: selected }; 
   await apiRequest("POST", `/barbers/${barberId}/services`, payload);
   toast("Services assigned", "success");
 
 
   $("#as_barber", container).value = ""; // reset select
   $$('#as_services_group input[type="checkbox"]', container)
-    .forEach(c => c.checked = false);    // desmarcar todos
+    .forEach(c => c.checked = false);   
 } catch (err) {
   toast(err.message || "Failed to assign", "error");
 } finally {

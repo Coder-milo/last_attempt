@@ -5,63 +5,51 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>Barber Panel - Barbexa</title>
 
+  <!-- Favicon -->
   <link rel="icon" type="image/png" href="/assets/img/logo2.png">
+  <!-- Font Awesome icons -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
-  <!-- Tu CSS -->
+  <!-- Main CSS -->
   <link rel="stylesheet" href="/assets/css/barbero.css">
-  <!-- Mini estilos de tabla (extra) -->
-  <style>
-    .table-tools{
-      display:flex; gap:12px; align-items:center; margin-bottom:12px; flex-wrap:wrap;
-    }
-    .input, .select{ padding:10px 12px; border-radius:8px; border:1px solid #333; background:#111; color:#eee; }
-    .table{ width:100%; border-collapse:collapse; overflow:auto; }
-    .table th, .table td{ padding:12px; border-bottom:1px solid #333; text-align:left; }
-    .table th{ color:#f9c74f; font-weight:700; background:#141414; position:sticky; top:0; }
-    .status-pill{ padding:4px 10px; border-radius:999px; font-weight:700; font-size:.85rem; }
-    .st-PENDIENTE{ background:#3a2b00; color:#f6d365; }
-    .st-CONFIRMADA{ background:#073d2b; color:#4ade80; }
-    .st-COMPLETADA{ background:#0b2a43; color:#60a5fa; }
-    .st-CANCELADA{ background:#3a0c0c; color:#f87171; }
-    .muted{ color:#aaa; font-size:.9rem; }
-    .right{ margin-left:auto; }
-    .btn{ background:#f9c74f; color:#111; border:none; border-radius:8px; padding:10px 14px; font-weight:700; cursor:pointer; }
-    .btn:hover{ filter:brightness(1.05); }
-    .btn.danger{ background:#ef4444; color:#fff; }
-  </style>
+
 </head>
 <body>
+  <!-- Header with navigation -->
   <header>
     <nav>
       <h1><img id="logo" src="/assets/img/logo2.png" alt=""> BARBER</h1>
 
-      <!-- botón hamburguesa solo móvil -->
+      <!-- Mobile hamburger button -->
       <button id="menuToggle" aria-label="Open menu" class="menu-btn">
         <i class="fa-solid fa-bars"></i>
       </button>
 
+      <!-- Main navigation menu -->
       <ul id="mainMenu">
         <li><a href="/" data-link><i class="fa-solid fa-house"></i> Home</a></li>
         <li><a href="/barbers" data-link class="active"><i class="fa-solid fa-user-tie"></i> Panel</a></li>
         <li><button id="btnLogout" class="btn danger"><i class="fa-solid fa-right-from-bracket"></i> Logout</button></li>
       </ul>
     </nav>
-
   </header>
 
+  <!-- Main container -->
   <div class="container">
 
-    <!-- My Schedule -->
+    <!-- Barber's schedule card -->
     <div class="card" style="grid-column: 1 / -1;">
       <h2><i class="fa-solid fa-calendar-days"></i> My Schedule</h2>
 
+      <!-- Table filters and tools -->
       <div class="table-tools">
+        <!-- Filter by time -->
         <div>
           <label class="muted">Filter by time</label><br/>
           <input id="filterTime" class="input" type="time" step="60" />
         </div>
 
+        <!-- Filter by status -->
         <div>
           <label class="muted">Filter by status</label><br/>
           <select id="filterStatus" class="select">
@@ -73,9 +61,11 @@
           </select>
         </div>
 
+        <!-- Reload button -->
         <button id="btnReload" class="btn right"><i class="fa-solid fa-rotate"></i> Reload</button>
       </div>
 
+      <!-- Reservations table -->
       <div class="table-wrap">
         <table class="table" id="reservationsTable">
           <thead>
@@ -92,6 +82,7 @@
           </thead>
           <tbody></tbody>
         </table>
+        <!-- Message when no reservations -->
         <div id="emptyMsg" class="muted" style="padding:8px 0; display:none;">No reservations found.</div>
       </div>
     </div>
